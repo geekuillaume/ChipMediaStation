@@ -7,7 +7,7 @@ Just launch this script into your newly installed chip (connected to internet) a
 ## Usage:
 
 ```shell
-wget https://raw.githubusercontent.com/geekuillaume/chipmediastation/install.sh
+wget https://raw.githubusercontent.com/geekuillaume/ChipMediaStation/master/install.sh
 chmod +x install.sh
 ./install.sh
 ```
