@@ -1,6 +1,12 @@
 #!/bin/sh
 
 printf "\n########\n\🎵Chip Audio Station 🎵\n\n########\n\n"
+
+if [ "$(id -u)" != "0" ]; then
+   echo "This script must be run as root" 1>&2
+   exit 1
+fi
+
 echo "Station name (for Airplay and Spotify):"
 read stationname
 
@@ -22,7 +28,6 @@ printf "\n########\n\nCreating config...\n\n########\n\n"
 CONFIGTEXT="general = {
   name = \"$stationname\";
   interpolation = \"soxr\";
-
 };
 
 alsa = {
@@ -42,7 +47,7 @@ printf "\n########\n\nConfiguring...\n\n########\n\n"
 cd shairport-sync
 git checkout development
 autoreconf -i -f
-./configure --with-alsa --with-avahi --with-ssl=openssl --with-systemd
+./configure --with-alsa --with-avahi --with-ssl=openssl --with-systemd --with-soxr
 
 # Build
 printf "\n########\n\nBuilding...\n\n########\n\n"
@@ -70,10 +75,14 @@ wget https://github.com/herrernst/librespot/releases/download/v20161230-7fd8503/
 unzip librespot-linux-armhf-raspberry_pi.zip -d /usr/bin
 rm librespot-linux-armhf-raspberry_pi.zip
 
-wget https://raw.githubusercontent.com/plietar/librespot/master/assets/librespot.service -o /etc/systemd/system/librespot.service
+wget https://raw.githubusercontent.com/plietar/librespot/master/assets/librespot.service -O /etc/systemd/system/librespot.service
 
 sed -i "s/%p on %H/$stationname/g" /etc/systemd/system/librespot.service
 systemctl enable librespot.service
 systemctl start librespot.service
+
+printf "\n########\n\nRemoving ubihealthd debug logging\n\n########\n\n"
+sed -i "s/ExecStart=\/usr\/sbin\/ubihealthd/ExecStart=\/usr\/sbin\/ubihealthd -v 1/g" /etc/systemd/system/ubihealthd.service
+systemctl restart ubihealthd
 
 printf "\n########\n\nAll done 😁\n\n########\n\n"
