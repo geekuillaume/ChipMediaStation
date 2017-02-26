@@ -20,8 +20,8 @@ locale-gen en_US en_US.UTF-8
 sudo dpkg-reconfigure locales
 # Dependencies
 printf "\n########\n\nInstalling dependencies...\n\n########\n\n"
-apt-get install -y autoconf libtool libdaemon-dev libasound2-dev libpopt-dev \
-    libconfig-dev avahi-daemon libavahi-client-dev libssl-dev git build-essential unzip
+apt-get install -y autoconf libtool libdaemon-dev libasound2-dev libpopt-dev automake \
+    libconfig-dev avahi-daemon libavahi-client-dev libssl-dev git build-essential unzip libsoxr-dev
 
 # Config file
 printf "\n########\n\nCreating config...\n\n########\n\n"
@@ -47,7 +47,7 @@ printf "\n########\n\nConfiguring...\n\n########\n\n"
 cd shairport-sync
 git checkout development
 autoreconf -i -f
-./configure --with-alsa --with-avahi --with-ssl=openssl --with-systemd --with-soxr
+./configure --sysconfdir=/etc --with-alsa --with-avahi --with-ssl=openssl --with-systemd --with-soxr
 
 # Build
 printf "\n########\n\nBuilding...\n\n########\n\n"
